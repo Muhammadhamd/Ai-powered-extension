@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BrowBuddy Agent Flow Test</title>
+</head>
+<body>
+    <h1>Testing BrowBuddy Agent Flow</h1>
+    <p>This page simulates the extension environment for testing.</p>
+    
+    <div id="test-content">
+        <h2>Sample Content</h2>
+        <p>This is some sample content to extract.</p>
+        <a href="#link1">Sample Link 1</a>
+        <a href="#link2">Sample Link 2</a>
+    </div>
+
+    <div id="test-results">
+        <h3>Test Results:</h3>
+        <pre id="results"></pre>
+    </div>
+
+    <script>
+        // Mock chrome extension APIs for testing
+        window.chrome = {
+            runtime: {
+                sendMessage: function(request, callback) {
+                    console.log('Mock sendMessage called:', request);
+                    
+                    // Simulate different responses based on action
+                    if (request.action === 'runAgentWithTools') {
+                        // Mock OpenAI response with tool calls
+                        const mockResponse = {
+                            success: true,
+                            result: {
+                                message: {
+                                    role: 'assistant',
+                                    content: null,
+                                    tool_calls: [
+                                        {
+                                            id: 'call_123',
+                                            type: 'function',
+                                            function: {
+                                                name: 'getSafePageContent',
+                                                arguments: '{}'
+                                            }
+                                        }
+                                    ]
+                                },
+                                tool_calls: [
+                                    {
+                                        id: 'call_123',
+                                        type: 'function',
+                                        function: {
+                                            name: 'getSafePageContent',
+                                            arguments: '{}'
+                                        }
+                                    }
+                                ]
+                            }
+                        };
+                        setTimeout(() => callback(mockResponse), 100);
+                    }
+                    return true;
+                }
+            }
+        };
+    </script>
+
+    <!-- Load tools.js -->
+    <script src="tools.js"></script>
+    
+    <!-- Load agentFlow.js -->
+    <script src="agentFlow.js"></script>
+
+    <script>
+        // Test function
+        async function testAgentFlow() {
+            const results = document.getElementById('results');
+            
+            try {
+                results.textContent = 'Testing agent flow...\n';
+                
+                // Test 1: Check if tools are available
+                if (window.BrowBuddy?.tools) {
+                    results.textContent += '✅ Tools module loaded\n';
+                    
+                    // Test tool schemas
+                    const schemas = window.BrowBuddy.tools.getToolSchemas();
+                    results.textContent += `✅ Tool schemas: ${schemas.length} tools available\n`;
+                    schemas.forEach(schema => {
+                        results.textContent += `   - ${schema.function.name}: ${schema.function.description}\n`;
+                    });
+                } else {
+                    results.textContent += '❌ Tools module not available\n';
+                    return;
+                }
+                
+                // Test 2: Check individual tools
+                results.textContent += '\nTesting individual tools:\n';
+                
+                const pageContent = await window.BrowBuddy.tools.callTool('getSafePageContent', {});
+                if (pageContent.success) {
+                    results.textContent += `✅ getSafePageContent: ${pageContent.data.substring(0, 100)}...\n`;
+                } else {
+                    results.textContent += `❌ getSafePageContent failed: ${pageContent.error}\n`;
+                }
+                
+                const pageInfo = await window.BrowBuddy.tools.callTool('getCurrentPageInfo', {});
+                if (pageInfo.success) {
+                    results.textContent += `✅ getCurrentPageInfo: ${pageInfo.data.title}\n`;
+                } else {
+                    results.textContent += `❌ getCurrentPageInfo failed: ${pageInfo.error}\n`;
+                }
+                
+                // Test 3: Test agent flow (will use mock)
+                results.textContent += '\nTesting agent flow (with mock):\n';
+                
+                const agentResult = await window.BrowBuddy.runAgentFlow("What is on this page?");
+                results.textContent += `Agent flow result: ${agentResult}\n`;
+                
+            } catch (error) {
+                results.textContent += `❌ Error: ${error.message}\n`;
+                console.error('Test error:', error);
+            }
+        }
+        
+        // Run test when page loads
+        window.addEventListener('load', () => {
+            setTimeout(testAgentFlow, 1000);
+        });
+    </script>
+</body>
+</html>
+

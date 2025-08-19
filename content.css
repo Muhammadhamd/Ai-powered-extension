@@ -1,0 +1,86 @@
+/* BrowBuddy Floating Circle */
+.browbuddy-circle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 999999;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.browbuddy-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.browbuddy-circle:active {
+    transform: scale(0.95);
+}
+
+/* AI Icon inside the circle */
+.browbuddy-icon {
+    width: 30px;
+    height: 30px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>') no-repeat center;
+    background-size: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Pulse animation for attention */
+.browbuddy-circle.pulse {
+    animation: browbuddy-pulse 2s infinite;
+}
+
+@keyframes browbuddy-pulse {
+    0% {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6);
+    }
+    100% {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Loading state */
+.browbuddy-circle.loading {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.browbuddy-circle.loading .browbuddy-icon {
+    animation: browbuddy-spin 1s linear infinite;
+}
+
+@keyframes browbuddy-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .browbuddy-circle {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .browbuddy-icon {
+        width: 25px;
+        height: 25px;
+    }
+} 

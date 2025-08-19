@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BrowBuddy</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-circle">🤖</div>
+                <h1>BrowBuddy</h1>
+            </div>
+            <p class="subtitle">AI-powered browser assistant</p>
+        </div>
+
+        <!-- Status -->
+        <div class="status-section">
+            <div class="status-item">
+                <span class="status-label">Status:</span>
+                <span class="status-value active">Active</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Shortcut:</span>
+                <span class="status-value">Ctrl+Shift+B</span>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-section">
+            <h3>Session Info</h3>
+            <div class="action-buttons">
+                <button id="view-session" class="btn btn-primary">View Session</button>
+                <button id="view-events" class="btn btn-secondary">View Events</button>
+            </div>
+            
+            <div class="openai-section">
+                <h3>🤖 OpenAI Settings</h3>
+                <div class="api-key-input">
+                    <input type="password" id="openai-key" placeholder="Enter your OpenAI API key" class="input-field">
+                    <button id="set-api-key" class="btn btn-success">Set API Key</button>
+                </div>
+                <div class="api-status">
+                    <span id="api-status-text">Status: Not set</span>
+                    <button id="toggle-openai" class="btn btn-small">Enable</button>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>⚙️ Settings</h3>
+                
+                <!-- Session Settings -->
+                <div class="setting-group">
+                    <h4>📊 Session Management</h4>
+                    <div class="setting-item">
+                        <label for="session-timeout">Session Timeout (minutes):</label>
+                        <input type="number" id="session-timeout" min="5" max="480" value="30" class="input-field">
+                        <button id="save-session-timeout" class="btn btn-primary">Save</button>
+                    </div>
+                    <div class="setting-item">
+                        <label>Current Session:</label>
+                        <span id="current-session-id">Loading...</span>
+                    </div>
+                    <div class="setting-item">
+                        <button id="new-session" class="btn btn-secondary">Start New Session</button>
+                        <button id="clear-session-data" class="btn btn-danger">Clear Session Data</button>
+                    </div>
+                </div>
+                
+                <!-- AI Settings -->
+                <div class="setting-group">
+                    <h4>🤖 AI Configuration</h4>
+                    <div class="setting-item">
+                        <label for="ai-model">AI Model:</label>
+                        <select id="ai-model" class="input-field">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="max-tokens">Max Tokens:</label>
+                        <input type="number" id="max-tokens" min="100" max="4000" value="1000" class="input-field">
+                    </div>
+                    <div class="setting-item">
+                        <label for="temperature">Temperature:</label>
+                        <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7" class="slider">
+                        <span id="temperature-value">0.7</span>
+                    </div>
+                </div>
+                
+                <!-- Interface Settings -->
+                <div class="setting-group">
+                    <h4>🎨 Interface</h4>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="auto-analyze" class="checkbox">
+                            Auto-analyze pages on load
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="show-notifications" class="checkbox" checked>
+                            Show notifications
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="circle-position">Circle Position:</label>
+                        <select id="circle-position" class="input-field">
+                            <option value="bottom-right">Bottom Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="top-right">Top Right</option>
+                            <option value="top-left">Top Left</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Data Management -->
+                <div class="setting-group">
+                    <h4>💾 Data Management</h4>
+                    <div class="setting-item">
+                        <button id="export-data" class="btn btn-secondary">Export Data</button>
+                        <button id="import-data" class="btn btn-secondary">Import Data</button>
+                    </div>
+                    <div class="setting-item">
+                        <button id="clear-all-data" class="btn btn-danger">Clear All Data</button>
+                    </div>
+                </div>
+                
+                <!-- Save All Settings -->
+                <div class="setting-actions">
+                    <button id="save-all-settings" class="btn btn-success">Save All Settings</button>
+                    <button id="reset-settings" class="btn btn-secondary">Reset to Defaults</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Click the floating circle on any webpage to start chatting!</p>
+            <div class="version">v1.0.0</div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
