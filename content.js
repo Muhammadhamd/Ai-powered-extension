@@ -758,40 +758,6 @@ function toggleOpenAI() {
     }
 }
 
-// Listen for messages from background.js
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'intermediateResponse') {
-        console.log('🔄 Intermediate response:', request.message);
-        displayIntermediateMessage(request.message);
-        sendResponse({ success: true });
-    }
-});
-
-function displayIntermediateMessage(message) {
-    const chatArea = document.getElementById('chat-area');
-    if (!chatArea) {
-        console.error('❌ Chat area not found');
-        return;
-    }
-
-    const intermediateMsg = document.createElement('div');
-    intermediateMsg.style.cssText = `
-        background: #f0f0f0;
-        padding: 12px 16px;
-        border-radius: 18px;
-        margin: 10px 0;
-        align-self: flex-start;
-        max-width: 80%;
-        word-wrap: break-word;
-        font-style: italic;
-        color: #666;
-    `;
-    intermediateMsg.textContent = message;
-
-    chatArea.appendChild(intermediateMsg);
-    chatArea.scrollTop = chatArea.scrollHeight;
-}
-
 // Make functions global
 window.BrowBuddy = Object.assign({}, window.BrowBuddy || {}, {
     logCurrentTab,

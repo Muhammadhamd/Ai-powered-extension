@@ -18,7 +18,7 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["content.js", "agentFlow.js","tools.js"],
+            "js": ["tools.js", "content.js", "agentFlow.js"],
             "css": ["content.css"]
         }
     ],

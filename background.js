@@ -196,9 +196,8 @@ function updateSessionActivity() {
 }
 
 // Call OpenAI API with tools support
-async function callOpenAI(messages, tools = null, model = 'gpt-4o-mini', maxTokens = 16000) {
+async function callOpenAI(messages, tools = null, model = 'gpt-3.5-turbo', maxTokens = 1000) {
     try {
-        model = 'gpt-4o-mini'
         if (!openaiApiKey) {
             throw new Error('OpenAI API key not set');
         }
@@ -265,11 +264,11 @@ async function analyzePageContent(data) {
     }
 }
 
-// Modify runAgentWithTools to notify frontend
+// Handle agent flow with tools (replacement for answerQuestion)
 async function runAgentWithTools(data) {
     try {
         const { question, tools, conversation_history = [] } = data;
-
+        
         // Build messages array starting with system message
         const messages = [
             {
@@ -282,12 +281,12 @@ async function runAgentWithTools(data) {
                 content: question
             }
         ];
-
+        
         console.log('🤖 Running agent with tools:', { tools: tools ? tools.length : 0 });
-
+        
         // Call OpenAI with tools
         const response = await callOpenAI(messages, tools);
-
+        
         return {
             full_response: response,
             message: response.choices[0]?.message,
@@ -359,24 +358,6 @@ function storeEvent(event) {
         console.error('❌ Error storing event:', error);
     }
 }
-
-// Function to trigger a function in the frontend
-function triggerFrontendFunction(tabId, data) {
-    chrome.tabs.sendMessage(tabId, { action: 'triggerFunction', data: data }, (response) => {
-        if (chrome.runtime.lastError) {
-            console.error('❌ Error sending message to frontend:', chrome.runtime.lastError);
-            return;
-        }
-        console.log('✅ Message sent to frontend:', response);
-    });
-}
-
-// Example usage: Trigger the function for a specific tab
-// chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//     if (tabs.length > 0) {
-//         triggerFrontendFunction(tabs[0].id, { someKey: 'someValue' });
-//     }
-// });
 
 // Initialize on install/startup
 try {
@@ -753,30 +734,6 @@ try {
                         });
                 } catch (error) {
                     console.error('❌ Error handling runAgentWithTools:', error);
-                    sendResponse({ success: false, error: error.message });
-                }
-                return true;
-            }
-
-            if (request.action === 'intermediateResponse') {
-                try {
-                    const tabId = sender?.tab?.id;
-                    if (typeof tabId === 'number') {
-                        chrome.tabs.sendMessage(tabId, { action: 'intermediateResponse', message: request.message });
-                        sendResponse({ success: true });
-                    } else {
-                        // Fallback to active tab if sender.tab is unavailable
-                        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                            if (tabs && tabs.length > 0) {
-                                chrome.tabs.sendMessage(tabs[0].id, { action: 'intermediateResponse', message: request.message });
-                                sendResponse({ success: true });
-                            } else {
-                                sendResponse({ success: false, error: 'No active tab found for intermediate response' });
-                            }
-                        });
-                    }
-                } catch (error) {
-                    console.error('❌ Error forwarding intermediateResponse:', error);
                     sendResponse({ success: false, error: error.message });
                 }
                 return true;
